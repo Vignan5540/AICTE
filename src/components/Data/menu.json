@@ -1,0 +1,35 @@
+{
+    "menu": [
+      {
+        "name": "Dashboard",
+        "routerLink": ["hr-dashboard"],
+        "iconClass": "icofont-dashboard",
+        "isToggled": false,
+        "children": []
+      },
+      {
+        "name": "UI Components",
+        "routerLink": ["ui-components"],
+        "iconClass": "icofont-ui-component",
+        "isToggled": true,
+        "children": []
+      },
+      {
+        "name": "Pages",
+        "routerLink": [""],
+        "iconClass": "icofont-page",
+        "isToggled": false,
+        "children": [
+          {
+            "name": "Page 1",
+            "routerLink": ["page1"]
+          },
+          {
+            "name": "Page 2",
+            "routerLink": ["page2"]
+          }
+        ]
+      }
+    ]
+  }
+  

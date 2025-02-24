@@ -10,6 +10,8 @@ import { configureStore } from "@reduxjs/toolkit";
 import { Provider } from "react-redux";
 import logger from "redux-logger";
 import { combineReducers } from "@reduxjs/toolkit";
+// import '../src/assets/scss/main.scss';
+
 import {
   loginReducer,
   requestProjectComplete,
@@ -50,7 +52,7 @@ createRoot(document.getElementById("root")).render(
   <>
     {" "}
     <Provider store={store}>
-      <RouterProvider router={router} />
+      <RouterProvider router={router} future={{ v7_startTransition: true, v7_relativeSplatPath: true }} />
       <ToastContainer />
     </Provider>
   </>

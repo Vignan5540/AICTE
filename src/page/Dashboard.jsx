@@ -7,20 +7,31 @@ import {
   FaProjectDiagram,
   FaUsers,
   FaTrash,
+  FaBars
 } from "react-icons/fa";
 
 import AlertDialogComponent from "@/components/AlertDialogComponent";
 import NavforMoboile from "@/components/NavforMoboile";
-import NavBar from "@/components/NavBar";
+// import NavBar from "@/components/NavBar";
 import ProjectPage from "@/page/ProjectPage";
 import CompletePage from "./CompletePage";
 import TaskPage from "./TaskPage";
 import MembersPage from "./MembersPage";
-import ProfilePage from "./ProfilePage";
 import { useDispatch, useSelector } from "react-redux";
 import { loginAction, requestDashbordAction } from "@/redux/action";
 import UserService from "@/utilities/UserService";
 import timeAgo from "@/utilities/timeAgo";
+import Sidebar from "@/components/Sidebar";
+import Projects from "../projects/project";
+import Tasks from "../projects/Task";
+import 'bootstrap/dist/css/bootstrap.min.css';
+import '../../src/assets/scss/main.scss'
+import LeaveRequest from "@/employee/LeaveRequest";
+import Departments from "@/employee/Departments";
+import ChatApp from "@/Apps/Chat";
+import Calender from "@/Apps/Calender";
+import ProjectDashboard from "@/components/ProjectDashboard";
+
 
 const Dashboard = () => {
   const [unreadNotifications, setUnreadNotifications] = useState(0);
@@ -29,6 +40,11 @@ const Dashboard = () => {
   const [selectedMessage, setSelectedMessage] = useState(null);
   const [activePage, setActivePage] = useState("dashboard");
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  const handleSidebarClose = () => {
+    setIsSidebarOpen(false);
+  };
 
   const { role, id } = useSelector((state) => {
     return state.loginReducer;
@@ -49,7 +65,7 @@ const Dashboard = () => {
 
   const getNotific = async () => {
     try {
-      const response = await UserService.getNofication(id);
+      const response = await UserService.getNotification(id);
       if (response?.success) {
         setNotifications(response.data);
       } else {
@@ -155,21 +171,19 @@ const Dashboard = () => {
   return (
     <>
       <div className="flex justify-evenly items-center shadow-md p-5">
-        <img
-          src="/logo.jpeg"
-          width={80}
-          height={80}
-          className="rounded-full"
-          alt="Logo"
-          onClick={() => {
-            setActivePage("dashboard");
-          }}
-        />
+            <button
+              onClick={() => setIsSidebarOpen(true)}
+              className="text-2xl mr-4 focus:outline-none position-bolck top-0 end-0 m-3"
+            >
+              <FaBars />
+             </button>
+            
+       
 
-        <NavBar setActivePage={setActivePage} activePage={activePage} />
+        {/* <NavBar setActivePage={setActivePage} activePage={activePage} /> */}
         <NavforMoboile setActivePage={setActivePage} activePage={activePage} />
 
-        <Menu as="div" className="relative flex">
+        {/* <Menu as="div" className="relative flex">
           <div className="relative mr-4 mt-2">
             <div
               className="cursor-pointer hover:text-[#F87F16]"
@@ -223,8 +237,8 @@ const Dashboard = () => {
                 </ul>
               </div>
             )}
-          </div>
-          <MenuButton className="focus:outline-none">
+          </div> */}
+          {/* <MenuButton className="focus:outline-none">
             <img
               src="/logo.jpeg"
               width={50}
@@ -263,7 +277,7 @@ const Dashboard = () => {
               )}
             </MenuItem>
           </MenuItems>
-        </Menu>
+        </Menu> */}
       </div>
 
       <div>
@@ -284,84 +298,39 @@ const Dashboard = () => {
           }}
           onConfirm={confirmLogout}
         />
-        {activePage === "project" && <ProjectPage whatUser={whatUser} />}
+        <Sidebar
+        isOpen={isSidebarOpen}
+        onClose={handleSidebarClose}
+        setActivePage={setActivePage}
+        activePage={activePage}
+        whatUser={whatUser}
+      />
+
+      {/* Overlay */}
+      {isSidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black opacity-50 z-40"
+          onClick={handleSidebarClose}
+        ></div>
+      )}
+       
+        {activePage === "project" && <Projects whatUser={whatUser} />}
         {activePage === "complete" && <CompletePage />}
-        {activePage === "task" && <TaskPage whatUser={whatUser} />}
+        {activePage === "project1" && <Projects whatUser={whatUser} />}
+        {activePage === "task" && <Tasks whatUser={whatUser} />}
+        {activePage === "Leave" && <LeaveRequest whatUser={whatUser} />}
+        {activePage === "Calender" && <Calender whatUser={whatUser} />}
+        {activePage === "Chat" && <ChatApp whatUser={whatUser} />}
+        {activePage === "Department" && <Departments whatUser={whatUser} />}
         {activePage === "members" && <MembersPage whatUser={whatUser} />}
         {activePage === "profile" && <ProfilePage />}
+
+
+
+
         {activePage === "dashboard" && (
-          <div className="p-6">
-            <h1 className="text-3xl font-bold mb-6">Dashboard</h1>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
-              <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h2 className="text-xl font-semibold">Total Tasks</h2>
-                    <p className="text-3xl font-bold text-[#F87F16]">
-                      {dashbord?.totalTasks || 0}
-                    </p>
-                  </div>
-                  <FaTasks className="text-4xl text-[#F87F16]" />
-                </div>
-              </div>
-
-              <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h2 className="text-xl font-semibold">Completed Tasks</h2>
-                    <p className="text-3xl font-bold text-green-500">
-                      {dashbord?.completedProjects || 0}
-                    </p>
-                  </div>
-                  <FaTasks className="text-4xl text-green-500" />
-                </div>
-              </div>
-
-              <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h2 className="text-xl font-semibold">Active Projects</h2>
-                    <p className="text-3xl font-bold text-blue-500">
-                      {dashbord?.activeProjects || 0}
-                    </p>
-                  </div>
-                  <FaProjectDiagram className="text-4xl text-blue-500" />
-                </div>
-              </div>
-
-              <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                {whatUser === "admin" && (
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h2 className="text-xl font-semibold">Total Members</h2>
-                      <p className="text-3xl font-bold text-purple-500">
-                        {dashbord?.teamMembers || 0}
-                      </p>
-                    </div>
-                    <FaUsers className="text-4xl text-purple-500" />
-                  </div>
-                )}
-              </div>
-            </div>
-
-            <div className="bg-white p-6 rounded-lg shadow-md">
-              <h2 className="text-xl font-semibold mb-4">Recent Activity</h2>
-              <div className="space-y-4">
-                {notifications.map((activity) => (
-                  <div
-                    key={activity._id}
-                    className="flex items-center justify-between text-2xl font-normal p-4 bg-gray-50 rounded-lg"
-                  >
-                    <p className="text-gray-700">{activity.content}</p>
-                    <span className="text-sm font-normal text-gray-500">
-                      {timeAgo(activity.date)}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
+          < ProjectDashboard />
+          
         )}
       </div>
     </>

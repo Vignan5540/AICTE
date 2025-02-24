@@ -1,0 +1,28 @@
+{
+    "menu2": [
+      {
+        "name": "Components",
+        "routerLink": ["components"],
+        "iconClass": "icofont-component",
+        "isToggled": true,
+        "children": [
+          {
+            "name": "Component 1",
+            "routerLink": ["component1"]
+          },
+          {
+            "name": "Component 2",
+            "routerLink": ["component2"]
+          }
+        ]
+      },
+      {
+        "name": "Widgets",
+        "routerLink": ["widgets"],
+        "iconClass": "icofont-widget",
+        "isToggled": false,
+        "children": []
+      }
+    ]
+  }
+  

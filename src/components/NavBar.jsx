@@ -8,7 +8,8 @@ const NavBar = ({ setActivePage, activePage }) => {
           { name: "Project", key: "project" },
           { name: "Complete", key: "complete" },
           { name: "Task", key: "task" },
-          { name: "Members", key: "members" },
+          { name: "Members", key: "members" },,
+          
         ].map((item) => (
           <li
             key={item.key}

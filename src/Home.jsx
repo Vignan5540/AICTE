@@ -1,31 +1,34 @@
 import React, { useEffect, useState } from "react";
-import Login from "./page/form/Login";
-import Dashboard from "./page/Dashboard";
-import AddMember from "./page/form/AddMember";
 import { useDispatch, useSelector } from "react-redux";
+import { BrowserRouter as Router, Route, Routes, useLocation } from "react-router-dom";
 import { requestMember } from "./redux/action";
 import UserService from "./utilities/UserService";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import Sidebar from "./components/Sidebar";
+import AuthIndex from "./page/AuthIndex"; // Assuming you have these components
+import Dashboard from "./page/Dashboard";
+// import "bootstrap/dist/css/bootstrap.min.css";
+// import "../src/assets/scss/main.scss";
 
 const Home = () => {
-  const { isLogged } = useSelector((state) => state.loginReducer);
-  const { members, isPending } = useSelector(
-    (state) => state.requestMemberReducer
-  );
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // Get user details from Redux
+  const { isLogged, role } = useSelector((state) => state.loginReducer);
+  const { members } = useSelector((state) => state.requestMemberReducer);
+
   const [isAddingMember, setIsAddingMember] = useState(false);
 
   useEffect(() => {
     dispatch(requestMember());
   }, [dispatch]);
-  const navigate = useNavigate();
+
   useEffect(() => {
     if (members && members.length === 0) {
       setIsAddingMember(true);
-    }
-    if (members !== undefined) {
-    } else {
     }
   }, [members]);
 
@@ -36,30 +39,38 @@ const Home = () => {
         role: "admin",
       });
       if (response?.success) {
-        toast.success("the user is registster as admin");
+        toast.success("The user is registered as admin");
         navigate("/login");
       }
-    } catch (error) {}
+    } catch (error) {
+      toast.error("Failed to register user.");
+    }
   };
+
+  const activeKey = () => {
+    return location.pathname;
+  };
+
+  if (activeKey() === "/sign-in" || activeKey() === "/sign-up" || activeKey() === "/password-reset" || activeKey() === "/2-step-authentication" || activeKey() === "/page-404") {
+    return (
+      <div id="mytask-layout" className="theme-indigo">
+        <Routes>
+          <Route path="/sign-in" element={<AuthIndex />} />
+          <Route path="/sign-up" element={<AuthIndex />} />
+          <Route path="/password-reset" element={<AuthIndex />} />
+          <Route path="/2-step-authentication" element={<AuthIndex />} />
+          <Route path="/page-404" element={<AuthIndex />} />
+        </Routes>
+      </div>
+    );
+  }
+
   return (
-    <div className="text-3xl text-black">
-      {isPending ? (
-        <div className="flex items-center justify-center h-screen">
-          <div className="flex flex-col items-center gap-2 animate-fadeIn">
-            <div className="w-10 h-10 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-            <p className="text-lg text-gray-600">Assembling your squad... </p>
-          </div>
-        </div>
-      ) : members.length === 0 && isAddingMember ? (
-        <AddMember
-          removePop={() => setIsAddingMember(false)}
-          memberAdd={memberAdd}
-        />
-      ) : isLogged ? (
-        <Dashboard />
-      ) : (
-        <Login />
-      )}
+    <div id="mytask-layout" className="theme-indigo">
+      {/* <Sidebar activeKey={activeKey()} /> */}
+      <Routes>
+        <Route path="/" element={<Dashboard />} />
+      </Routes>
     </div>
   );
 };
